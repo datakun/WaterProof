@@ -5,8 +5,6 @@ import android.widget.ListView;
 
 import com.kimjunu.waterproof.model.User;
 
-import java.util.ArrayList;
-
 public class LeaderboardActivity extends BaseActivity {
 
     private static final String TAG = "Leaderboard";
@@ -25,18 +23,26 @@ public class LeaderboardActivity extends BaseActivity {
 
         mListView.setAdapter(mAdapter);
 
-        WaterProofApplication.updateRankList();
         WaterProofApplication.setOnDatabaseEventListener(new WaterProofApplication.DatabaseEventListener() {
             @Override
-            public void onUpdatedRankList(ArrayList<User> rankAroundList) {
-                mAdapter.clearAll();
+            public void onAddedAroundUser(User user) {
+                mAdapter.add(user);
 
-                for (User item : rankAroundList) {
-                    mAdapter.add(item);
-                }
+                mAdapter.sortDesc();
 
                 mAdapter.notifyDataSetChanged();
             }
+//            @Override
+//            public void onUpdatedRankList(ArrayList<User> rankAroundList) {
+//                mAdapter.clearAll();
+//
+//                for (User item : rankAroundList) {
+//                    mAdapter.add(item);
+//                }
+//
+//                mAdapter.notifyDataSetChanged();
+//            }
         });
+        WaterProofApplication.updateRankList();
     }
 }

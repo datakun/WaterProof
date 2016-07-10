@@ -1,8 +1,11 @@
 package com.kimjunu.waterproof;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.DisplayMetrics;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,7 +20,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.kimjunu.waterproof.model.User;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -48,7 +50,8 @@ public class WaterProofApplication extends Application {
     private static int mUpdateFlag = 0;
 
     public interface DatabaseEventListener {
-        void onUpdatedRankList(ArrayList<User> rankAroundList);
+        //        void onUpdatedRankList(ArrayList<User> rankAroundList);
+        void onAddedAroundUser(User user);
     }
 
     public static void setOnDatabaseEventListener(DatabaseEventListener listener) {
@@ -113,13 +116,13 @@ public class WaterProofApplication extends Application {
                     flag++;
                 }
 
-                if (flag == mRankAroundUserList.size())
-                    mRankAroundUserList.add(user);
+                if (flag != mRankAroundUserList.size())
+                    return;
 
-                Collections.sort(mRankAroundUserList, new ScoreDescCompare());
+                mRankAroundUserList.add(user);
 
                 if (mDatabaseEventListener != null)
-                    mDatabaseEventListener.onUpdatedRankList(mRankAroundUserList);
+                    mDatabaseEventListener.onAddedAroundUser(user);
             }
 
             @Override
@@ -288,5 +291,19 @@ public class WaterProofApplication extends Application {
     public static void revokeUser() {
         if (mAuthUser != null)
             mDatabase.child("users").child(mAuthUser.getUid()).removeValue();
+    }
+
+    public static float convertDpToPixel(float dp, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return px;
+    }
+
+    public static float convertPixelsToDp(float px, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = px / ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return dp;
     }
 }

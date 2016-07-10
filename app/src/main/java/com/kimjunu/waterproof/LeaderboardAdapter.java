@@ -3,7 +3,6 @@ package com.kimjunu.waterproof;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -19,6 +18,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class LeaderboardAdapter extends BaseAdapter {
     private final Context context;
@@ -76,7 +76,10 @@ public class LeaderboardAdapter extends BaseAdapter {
         }
 
         tvName.setText(mList.get(i).username);
-        tvScore.setText(Long.toString(mList.get(i).score));
+
+        String strScore = Long.toString(mList.get(i).score)
+                + " " + context.getResources().getString(R.string.score_postfix);
+        tvScore.setText(strScore);
 
         new RetrievePhotoTask(ivProfile).execute(mList.get(i).photoURL);
 
@@ -95,6 +98,10 @@ public class LeaderboardAdapter extends BaseAdapter {
         mList.clear();
     }
 
+    public void sortDesc() {
+        Collections.sort(mList, new WaterProofApplication.ScoreDescCompare());
+    }
+
     private class LeaderboardHolder {
         TextView tvName;
         TextView tvScore;
@@ -108,11 +115,13 @@ public class LeaderboardAdapter extends BaseAdapter {
         public RetrievePhotoTask(ImageView iv) {
             ivProfile = iv;
 
-            Drawable d = ivProfile.getDrawable();
-            if (d instanceof BitmapDrawable) {
-                Bitmap b = ((BitmapDrawable) d).getBitmap();
-                b.recycle();
-            }
+//            Drawable d = ivProfile.getDrawable();
+//            if (d instanceof BitmapDrawable) {
+//                Bitmap b = ((BitmapDrawable) d).getBitmap();
+//                if (!b.isRecycled()) {
+//                    b.recycle();
+//                }
+//            }
         }
 
         protected Bitmap doInBackground(String... photoURL) {
@@ -120,7 +129,6 @@ public class LeaderboardAdapter extends BaseAdapter {
                 Bitmap bmpProfile;
 
                 HttpURLConnection connection = (HttpURLConnection) new URL(photoURL[0]).openConnection();
-                connection.setRequestProperty("User-agent", "Mozilla/5.0");
                 connection.connect();
 
                 InputStream input = connection.getInputStream();

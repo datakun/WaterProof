@@ -10,49 +10,79 @@
     tools:context="com.kimjunu.waterproof.PlayActivity"
     android:background="@color/colorDeepBlue">
 
-    <Button
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:text="Create"
-        android:id="@+id/btnCreate"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="onCreateData"/>
-
-    <Button
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:text="Read"
-        android:id="@+id/btnRead"
-        android:layout_below="@+id/btnCreate"
-        android:layout_alignStart="@+id/btnCreate"
-        android:onClick="onReadData"/>
-
-    <Button
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:text="Update"
-        android:id="@+id/btnUpdate"
-        android:layout_below="@+id/btnRead"
-        android:layout_alignStart="@+id/btnRead"
-        android:onClick="onUpdateData"/>
-
-    <Button
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        android:id="@+id/btnDelete"
-        android:layout_below="@+id/btnUpdate"
-        android:layout_alignStart="@+id/btnUpdate"
-        android:onClick="onDeletedata"/>
-
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/tvResult"
+        android:id="@+id/ivSubLife"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="78dp"
-        android:textColor="#ffffff" />
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivPlayer"
+        android:src="@drawable/ic_player"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/ivAccelerate"
+        android:src="@drawable/ic_run_white_48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="8dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="8dp"
+        android:id="@+id/llMoverContainer">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/ivMoveLeft"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="0dp"
+            android:src="@drawable/ic_left_white_24dp" />
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/ivMoveRight"
+            android:src="@drawable/ic_right_white_48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/ivMoveLeft" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/ivLifePoint"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_favorite_red_48dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="1000"
+            android:id="@+id/tvLifePoint"
+            android:textColor="#ffffff"
+            android:gravity="center" />
+    </LinearLayout>
+
 </RelativeLayout>
