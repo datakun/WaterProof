@@ -1,8 +1,8 @@
 package com.kimjunu.waterproof;
 
 public class Player {
-    private int lifePoint;
-    private int consumePoint;
+    private float lifePoint;
+    private float consumePoint;
     private float currentSpeed;
     private float acceleratePoint;
     private float speedLimit;
@@ -11,12 +11,12 @@ public class Player {
 
     public Player() {
         lifePoint = 1000;
-        consumePoint = 1;
+        consumePoint = (float) 0.5;
         currentSpeed = 0;
-        acceleratePoint = (float) 0.5;
+        acceleratePoint = (float) 0.25;
         speedLimit = 15;
         angle = 0;
-        controlPoint = 1;
+        controlPoint = (float) 0.5;
     }
 
     public void accelerate() {
@@ -49,7 +49,7 @@ public class Player {
     }
 
     public void gainLife(int point) {
-        int resultPoint = lifePoint + point;
+        float resultPoint = lifePoint + point;
 
         if (resultPoint > 1000)
             lifePoint = 1000;
@@ -57,7 +57,7 @@ public class Player {
             lifePoint += point;
     }
 
-    public int getLifePoint() {
+    public float getLifePoint() {
         return lifePoint;
     }
 

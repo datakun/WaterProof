@@ -141,20 +141,55 @@
 
             <ImageView
                 android:id="@+id/ivLifePoint"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_favorite_red_48dp" />
+                android:src="@drawable/ic_favorite_red_48dp"
+                android:layout_gravity="center" />
 
             <TextView
                 android:id="@+id/tvLifePoint"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="1000"
+                android:text="100 %"
                 android:textColor="#ffffff" />
 
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="00 : 00"
+            android:id="@+id/tvTime"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textColor="#ffffff" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/llDepthContainer">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:id="@+id/imageView"
+                android:src="@drawable/ic_trending_down_black_24dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="0 m"
+                android:id="@+id/tvDepth"
+                android:textColor="#ffffff"
+                android:gravity="center" />
         </LinearLayout>
 
     </RelativeLayout>

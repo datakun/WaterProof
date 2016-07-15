@@ -42,6 +42,9 @@ public class PlayActivity extends BaseActivity {
     private LinearLayout llMoverContainer = null;
     private LinearLayout llLifeContainer = null;
     private TextView tvLifePoint = null;
+    private TextView tvTime = null;
+    private LinearLayout llDepthContainer = null;
+    private TextView tvDepth = null;
 
     private Handler mStatusChecker = null;
     private Runnable mStatusMaker = null;
@@ -57,6 +60,9 @@ public class PlayActivity extends BaseActivity {
     private float walkPoint = 0;
     private int imageWidth = 0;
 
+    private long startTime = 0;
+    private long depth = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +76,9 @@ public class PlayActivity extends BaseActivity {
         llMoverContainer = (LinearLayout) findViewById(R.id.llMoverContainer);
         llLifeContainer = (LinearLayout) findViewById(R.id.llLifeContainer);
         tvLifePoint = (TextView) findViewById(R.id.tvLifePoint);
+        tvTime = (TextView) findViewById(R.id.tvTime);
+        llDepthContainer = (LinearLayout) findViewById(R.id.llDepthContainer);
+        tvDepth = (TextView) findViewById(R.id.tvDepth);
 
         ivBackgroundList = new ArrayList<>();
         ivBackgroundList.add((ImageView) findViewById(R.id.ivBg1));
@@ -81,6 +90,9 @@ public class PlayActivity extends BaseActivity {
 
         llMoverContainer.setVisibility(View.INVISIBLE);
         llLifeContainer.setVisibility(View.INVISIBLE);
+        llDepthContainer.setVisibility(View.INVISIBLE);
+
+        tvTime.setVisibility(View.INVISIBLE);
 
         DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
@@ -112,7 +124,7 @@ public class PlayActivity extends BaseActivity {
         ivLowerBg.setX(ivCurrentBg.getX());
         ivLowerRightBg.setX(ivCurrentBg.getX() + imageWidth * 2 - 5);
 
-        walkPoint = (float) (screenHeight / 1000.0);
+        walkPoint = (float) (screenHeight / 2000.0);
 
         mViewTouchListener = new View.OnTouchListener() {
             @Override
@@ -174,10 +186,15 @@ public class PlayActivity extends BaseActivity {
                         ivAccelerate.setOnClickListener(null);
 
                         mStatusChecker = new Handler();
-                        mStatusChecker.postDelayed(mStatusMaker, 100);
+                        mStatusChecker.postDelayed(mStatusMaker, 50);
 
                         llMoverContainer.setVisibility(View.VISIBLE);
                         llLifeContainer.setVisibility(View.VISIBLE);
+                        llDepthContainer.setVisibility(View.VISIBLE);
+
+                        tvTime.setVisibility(View.VISIBLE);
+
+                        startTime = System.currentTimeMillis();
 
                         break;
                 }
@@ -217,7 +234,7 @@ public class PlayActivity extends BaseActivity {
                 // 방향 전환 애니메이션
                 ivPlayer.animate()
                         .rotation(mPlayer.getAngle())
-                        .setDuration(50)
+                        .setDuration(30)
                         .start();
 
                 // 전진 애니메이션
@@ -231,7 +248,7 @@ public class PlayActivity extends BaseActivity {
                     if (screenHeight / 5 > ivPlayer.getY()) {
                         ivPlayer.animate()
                                 .translationYBy(movingPoint)
-                                .setDuration(80)
+                                .setDuration(40)
                                 .start();
                     } else {
                         ivPlayer.setY(screenHeight / 5);
@@ -240,8 +257,11 @@ public class PlayActivity extends BaseActivity {
                     if (screenHeight / 7 < ivPlayer.getY()) {
                         ivPlayer.animate()
                                 .translationYBy(-walkPoint * 3)
-                                .setDuration(80)
+                                .setDuration(40)
                                 .start();
+
+                        // 배경 이동 애니메이션
+                        ivCurrentBg.setY(ivCurrentBg.getY() - walkPoint * 3);
                     } else {
                         ivPlayer.setY(screenHeight / 7);
                     }
@@ -260,6 +280,9 @@ public class PlayActivity extends BaseActivity {
                     if (currentRect.contains((int) ivPlayer.getX(), (int) ivPlayer.getY())) {
                         if (item.getY() <= 0 &&
                                 (item.getX() + item.getWidth() >= screenWidth || item.getX() >= 0))
+                            break;
+
+                        if (item.getY() <= 0)
                             break;
                     }
                 }
@@ -285,7 +308,8 @@ public class PlayActivity extends BaseActivity {
                 ivLowerRightBg.setX(ivCurrentBg.getX() + imageWidth - 5);
 
                 // 라이프 소비 애니메이션
-                tvLifePoint.setText(String.valueOf(mPlayer.getLifePoint()));
+                String lifePoint = String.valueOf((int)mPlayer.getLifePoint() / 10) + " %";
+                tvLifePoint.setText(lifePoint);
 
                 float percent = (mPlayer.getLifePoint() / (float) 1000.0) * 0xff;
 
@@ -299,7 +323,21 @@ public class PlayActivity extends BaseActivity {
                     ivLifePoint.setImageDrawable(vectorDrawable);
                 }
 
-                mStatusChecker.postDelayed(this, 100);
+                // 시간 표시
+                long sec = (System.currentTimeMillis() - startTime) / 1000;
+                long min = sec / 60;
+                sec = sec % 60;
+
+                String timeString = String.format("%02d : %02d", min, sec);
+                tvTime.setText(timeString);
+
+                // 깊이 표시
+                depth += movingPoint / walkPoint;
+
+                String depthString = String.valueOf(depth / 200) + " m";
+                tvDepth.setText(depthString);
+
+                mStatusChecker.postDelayed(this, 50);
             }
         };
     }
