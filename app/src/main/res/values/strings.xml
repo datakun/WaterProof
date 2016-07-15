@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Water Proof</string>
     <string name="close_message">Please push again a \'Back\' button to close.</string>
+    <string name="close_playing_message">Do you want to back to main menu?</string>
     <string name="leaderboard_name">Leaderboard</string>
     <string name="score_postfix">Point</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

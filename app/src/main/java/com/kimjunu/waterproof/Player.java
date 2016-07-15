@@ -5,26 +5,36 @@ public class Player {
     private int consumePoint;
     private float currentSpeed;
     private float acceleratePoint;
+    private float speedLimit;
     private float angle; // Left: +, Right: -, Neutral: 0
-    private float controlPoint;
+    private float controlPoint; // Angle Control point
 
     public Player() {
         lifePoint = 1000;
         consumePoint = 1;
         currentSpeed = 0;
         acceleratePoint = (float) 0.5;
+        speedLimit = 15;
         angle = 0;
         controlPoint = 1;
     }
 
     public void accelerate() {
-        if (currentSpeed < 10)
+        if (currentSpeed < speedLimit)
             currentSpeed += acceleratePoint;
     }
 
     public void deaccelerate() {
         if (currentSpeed > 0)
             currentSpeed -= 1;
+    }
+
+    public float getSpeedLimit() {
+        return speedLimit;
+    }
+
+    public void setCurrentSpeed(float limit) {
+        speedLimit = limit;
     }
 
     public void consumeLife() {
@@ -55,14 +65,6 @@ public class Player {
     public void turnRight() {
         if (angle > -80)
             angle -= controlPoint;
-    }
-
-    public String getStatus() {
-        String status = "";
-        status += "Speed : " + Float.toString(currentSpeed) + ", ";
-        status += "Angle : " + Float.toString(angle);
-
-        return status;
     }
 
     public float getAcceleratePoint() {
