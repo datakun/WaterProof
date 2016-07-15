@@ -63,6 +63,8 @@ public class PlayActivity extends BaseActivity {
     private long startTime = 0;
     private long depth = 0;
 
+    private boolean gamePause = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -308,7 +310,7 @@ public class PlayActivity extends BaseActivity {
                 ivLowerRightBg.setX(ivCurrentBg.getX() + imageWidth - 5);
 
                 // 라이프 소비 애니메이션
-                String lifePoint = String.valueOf((int)mPlayer.getLifePoint() / 10) + " %";
+                String lifePoint = String.valueOf((int) mPlayer.getLifePoint() / 10) + " %";
                 tvLifePoint.setText(lifePoint);
 
                 float percent = (mPlayer.getLifePoint() / (float) 1000.0) * 0xff;
@@ -337,14 +339,32 @@ public class PlayActivity extends BaseActivity {
                 String depthString = String.valueOf(depth / 200) + " m";
                 tvDepth.setText(depthString);
 
-                mStatusChecker.postDelayed(this, 50);
+                if (!gamePause)
+                    mStatusChecker.postDelayed(this, 50);
             }
         };
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        if (gamePause)
+            mStatusChecker.postDelayed(mStatusMaker, 50);
+
+        gamePause = false;
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
+
+        gamePause = true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
         if (mStatusChecker != null)
             if (mStatusMaker != null)
