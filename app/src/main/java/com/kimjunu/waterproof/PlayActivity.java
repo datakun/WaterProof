@@ -96,12 +96,21 @@ public class PlayActivity extends BaseActivity {
             item.setLayoutParams(params);
         }
 
-        ivCurrentBg = ivBackgroundList.get(1);
-        ivLeftBg = ivBackgroundList.get(0);
-        ivRightBg = ivBackgroundList.get(2);
-        ivLowerBg = ivBackgroundList.get(4);
-        ivLowerLeftBg = ivBackgroundList.get(3);
-        ivLowerRightBg = ivBackgroundList.get(5);
+        determineBackgroundView(1);
+
+        ivLeftBg.setY(ivCurrentBg.getY());
+        ivRightBg.setY(ivCurrentBg.getY());
+
+        ivLeftBg.setX(ivCurrentBg.getX() - imageWidth + 5);
+        ivRightBg.setX(ivCurrentBg.getX() + imageWidth * 2 - 5);
+
+        ivLowerLeftBg.setY(ivLeftBg.getY() + imageWidth - 5);
+        ivLowerBg.setY(ivCurrentBg.getY() + imageWidth - 5);
+        ivLowerRightBg.setY(ivRightBg.getY() + imageWidth - 5);
+
+        ivLowerLeftBg.setX(ivCurrentBg.getX() - imageWidth + 5);
+        ivLowerBg.setX(ivCurrentBg.getX());
+        ivLowerRightBg.setX(ivCurrentBg.getX() + imageWidth * 2 - 5);
 
         walkPoint = (float) (screenHeight / 1000.0);
 
@@ -214,7 +223,7 @@ public class PlayActivity extends BaseActivity {
                 // 전진 애니메이션
                 float movingPoint = mPlayer.getCurrentSpeed() * walkPoint;
                 float turnPoint = mPlayer.getAngle() / 80 * movingPoint;
-                movingPoint = movingPoint - (mPlayer.getAngle() / 10 * walkPoint);
+                movingPoint = movingPoint - ((Math.abs(mPlayer.getAngle()) / 10) * walkPoint);
                 if (movingPoint < 0)
                     movingPoint = 0;
 
@@ -248,20 +257,24 @@ public class PlayActivity extends BaseActivity {
                             (int) item.getX() + item.getWidth(),
                             (int) item.getY() + item.getHeight());
 
-                    if (currentRect.contains((int) ivPlayer.getX(), (int) ivPlayer.getY())
-                            && item.getY() <= 0)
-                        break;
+                    if (currentRect.contains((int) ivPlayer.getX(), (int) ivPlayer.getY())) {
+                        if (item.getY() <= 0 &&
+                                (item.getX() + item.getWidth() >= screenWidth || item.getX() >= 0))
+                            break;
+                    }
                 }
 
                 determineBackgroundView(index);
 
+                // 배경 이동 애니메이션
                 ivCurrentBg.setY(ivCurrentBg.getY() - movingPoint);
+                ivCurrentBg.setX(ivCurrentBg.getX() + turnPoint);
 
                 ivLeftBg.setY(ivCurrentBg.getY());
                 ivRightBg.setY(ivCurrentBg.getY());
 
                 ivLeftBg.setX(ivCurrentBg.getX() - imageWidth + 5);
-                ivRightBg.setX(ivCurrentBg.getX() + imageWidth * 2 - 5);
+                ivRightBg.setX(ivCurrentBg.getX() + imageWidth - 5);
 
                 ivLowerLeftBg.setY(ivLeftBg.getY() + imageWidth - 5);
                 ivLowerBg.setY(ivCurrentBg.getY() + imageWidth - 5);
@@ -269,30 +282,7 @@ public class PlayActivity extends BaseActivity {
 
                 ivLowerLeftBg.setX(ivCurrentBg.getX() - imageWidth + 5);
                 ivLowerBg.setX(ivCurrentBg.getX());
-                ivLowerRightBg.setX(ivCurrentBg.getX() + imageWidth * 2 - 5);
-
-//                Log.d(TAG, (screenHeight - ivBackgroundList.get(1).getHeight() + movingPoint) + "");
-
-//                if (ivBackgroundList.get(1).getY() > screenHeight - ivBackgroundList.get(1).getHeight() + movingPoint
-//                        && movingPoint >= 0) {
-//                    ivBackgroundList.get(1).animate()
-//                            .translationYBy(-movingPoint)
-//                            .setDuration(80)
-//                            .start();
-//                } else {
-//                    ivBackgroundList.get(1).setY(0);
-//                }
-//
-//                if (ivBackgroundList.get(1).getX() > screenWidth - ivBackgroundList.get(1).getWidth() - turnPoint
-//                        && ivBackgroundList.get(1).getX() < -turnPoint) {
-//                    ivBackgroundList.get(1).animate()
-//                            .translationXBy(turnPoint)
-//                            .setDuration(80)
-//                            .start();
-//                } else {
-//                    int x = ivBackgroundList.get(1).getWidth() / 2 - screenWidth / 2;
-//                    ivBackgroundList.get(1).setX(-x);
-//                }
+                ivLowerRightBg.setX(ivCurrentBg.getX() + imageWidth - 5);
 
                 // 라이프 소비 애니메이션
                 tvLifePoint.setText(String.valueOf(mPlayer.getLifePoint()));
@@ -325,17 +315,6 @@ public class PlayActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-//        AlertDialog.Builder ab = new AlertDialog.Builder(this);
-////        ab.setMessage(Html.fromHtml("<strong><font color=\"#ff0000\"> " + "Html 표현여부 "
-////                + "</font></strong><br>HTML 이 제대로 표현되는지 본다."));
-//        ab.setMessage(R.string.close_playing_message);
-//        ab.setPositiveButton("OK", null);
-//        ab.show();
-//
-//        super.onBackPressed();
-//
-//        return;
-
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(R.string.app_name);
         alert.setMessage(R.string.close_playing_message);
@@ -355,29 +334,35 @@ public class PlayActivity extends BaseActivity {
     }
 
     private void determineBackgroundView(int index) {
-        int leftIndex = (index + 2) % 3;
-        int rightIndex = (index + 1) % 3;
+        int leftIndex;
+        int rightIndex;
 
         switch (index) {
             case 0:
             case 1:
             case 2:
-                ivCurrentBg = ivBackgroundList.get(index);
-                ivLowerBg = ivBackgroundList.get(index + 3);
+                leftIndex = (index + 2) % 3;
+                rightIndex = (index + 1) % 3;
+
                 ivLeftBg = ivBackgroundList.get(leftIndex);
+                ivCurrentBg = ivBackgroundList.get(index);
                 ivRightBg = ivBackgroundList.get(rightIndex);
                 ivLowerLeftBg = ivBackgroundList.get(leftIndex + 3);
+                ivLowerBg = ivBackgroundList.get(index + 3);
                 ivLowerRightBg = ivBackgroundList.get(rightIndex + 3);
 
                 break;
             case 3:
             case 4:
             case 5:
+                leftIndex = (index + 2) % 3 + 3;
+                rightIndex = (index + 1) % 3 + 3;
+
+                ivLeftBg = ivBackgroundList.get(leftIndex);
                 ivCurrentBg = ivBackgroundList.get(index);
-                ivLowerBg = ivBackgroundList.get((index + 3) % 6);
-                ivLeftBg = ivBackgroundList.get(leftIndex + 3);
-                ivRightBg = ivBackgroundList.get(rightIndex + 3);
+                ivRightBg = ivBackgroundList.get(rightIndex);
                 ivLowerLeftBg = ivBackgroundList.get((leftIndex + 3) % 6);
+                ivLowerBg = ivBackgroundList.get((index + 3) % 6);
                 ivLowerRightBg = ivBackgroundList.get((rightIndex + 3) % 6);
 
                 break;

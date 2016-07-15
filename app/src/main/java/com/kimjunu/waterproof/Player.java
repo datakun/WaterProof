@@ -22,11 +22,15 @@ public class Player {
     public void accelerate() {
         if (currentSpeed < speedLimit)
             currentSpeed += acceleratePoint;
+        else
+            currentSpeed = speedLimit;
     }
 
     public void deaccelerate() {
         if (currentSpeed > 0)
-            currentSpeed -= 1;
+            currentSpeed -= 0.5;
+        else
+            currentSpeed = 0;
     }
 
     public float getSpeedLimit() {
